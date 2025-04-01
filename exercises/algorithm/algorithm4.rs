@@ -3,7 +3,6 @@
 	This problem requires you to implement a basic interface for a binary tree
 */
 
-//I AM NOT DONE
 use std::cmp::Ordering;
 use std::fmt::Debug;
 
@@ -50,13 +49,39 @@ where
 
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
-        //TODO
+        if let Some(root) = &mut self.root {
+            root.insert(value);
+        } else {
+            self.root = Some(Box::new(TreeNode::new(value)));
+        }
     }
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
-        //TODO
-        true
+        if let Some(root) = &self.root {
+            return Self::search_node(root, &value);
+        }
+        false
+    }
+
+    fn search_node(node: &Box<TreeNode<T>>, value: &T) -> bool {
+        match value.cmp(&node.value) {
+            Ordering::Equal => true,
+            Ordering::Less => {
+                if let Some(left) = &node.left {
+                    Self::search_node(left, value)
+                } else {
+                    false
+                }
+            }
+            Ordering::Greater => {
+                if let Some(right) = &node.right {
+                    Self::search_node(right, value)
+                } else {
+                    false
+                }
+            }
+        }
     }
 }
 
@@ -66,7 +91,29 @@ where
 {
     // Insert a node into the tree
     fn insert(&mut self, value: T) {
-        //TODO
+        match value.cmp(&self.value) {
+            Ordering::Equal => {
+                // Value already exists, do nothing or replace
+                // Here we choose to do nothing for duplicates
+                return;
+            }
+            Ordering::Less => {
+                // Insert to the left
+                if let Some(left) = &mut self.left {
+                    left.insert(value);
+                } else {
+                    self.left = Some(Box::new(TreeNode::new(value)));
+                }
+            }
+            Ordering::Greater => {
+                // Insert to the right
+                if let Some(right) = &mut self.right {
+                    right.insert(value);
+                } else {
+                    self.right = Some(Box::new(TreeNode::new(value)));
+                }
+            }
+        }
     }
 }
 
